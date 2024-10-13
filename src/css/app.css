@@ -1,0 +1,37 @@
+@import 'f7-welcomescreen/styles.css';
+
+/* iOS Cordova Tweak */
+.device-cordova.device-ios {
+  height: 100vh;
+}
+
+/* Your app custom styles here */
+:root {
+  --f7-font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.welcomescreen-title {
+  font-size: 2.5em;
+  font-weight: 700;
+  margin-top: 150px;
+}
+
+.welcomescreen-picture {
+  margin-top: 50px;
+}
+
+.welcomescreen-picture i {
+  font-size: 8em;
+}
+
+.welcomescreen-text {
+  position: static;
+  margin-top: 75px;
+  text-align: center;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.welcomescreen-closebtn {
+  display: none;
+}

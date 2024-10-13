@@ -1,0 +1,9 @@
+<template>
+  <div id="app">
+
+    <div class="views safe-areas">
+      <div id="view-home" class="view view-main view-init tab tab-active" data-url="/"></div>
+    </div>
+
+  </div>
+</template>
