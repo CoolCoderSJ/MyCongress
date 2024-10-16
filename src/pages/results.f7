@@ -1,0 +1,53 @@
+<template>
+    <div class="page" data-name="home">
+      <!-- Top Navbar -->
+      <div class="navbar navbar-large">
+        <div class="navbar-bg" style="background-color: #1a1c19;"></div>
+        <div class="navbar-inner">
+          <div class="title sliding"><b>billable</b></div>
+          <div class="title-large">
+            <div class="title-large-text"><b>billable</b></div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Scrollable page content-->
+      <div class="page-content">
+        <div class="list" id="resultsList">
+            
+        </div>
+      </div>
+    </div>
+  </template>
+  <script>
+  export default (props, { $update, $, $f7, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted }) => {
+    $on('pageInit', () => {
+        document.getElementsByClassName("tab-link-highlight")[0].setAttribute('style', 'left: 50%; width: 50%;');
+        let results = app.store.state.personSearchResults;
+
+        for (let i = 0; i < results.length; i++) {
+            let name = results[i].name.split(", ").reverse().join(" ");
+            document.getElementById("resultsList").innerHTML += `<a href="/person/${results[i].bioguideId}">
+            <div class="block">
+                <div class="card" style="margin-left: 0; margin-right: 0;">
+                  <div class="card-content card-content-padding" style="padding-left: 20px; padding-bottom: 10px; padding-right: 0px;">
+                    <div class="grid grid-cols-2" style="gap: 12px">
+                      <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <h1 style="margin-bottom: 6px; color: ${results[i].partyName == "Democratic" ? 'rgb(133, 185, 253)' : '#ff3b30'}">${name}</h1>
+                        <h1 style="margin-top: 0px; margin-bottom: 12px; display: flex; gap: 8px;"><span class="badge color-black">${results[i].terms.item[0].chamber == "House of Representatives" ? "House" : "Senate"}</span><span class="badge color-black">${app.store.state.state}</span>${results[i].district ? `<span class="badge color-black">District ${results[i].district}</span>` : ''}</h1>
+                        <button class="button button-tonal">More</button>
+                      </div>
+                      <div>
+                        <img src="${results[i].depiction.imageUrl}" style="border-radius: 12px; margin-bottom: 0; width: 175px; height: 219px;" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            </a>`;
+        }
+    })
+
+    return $render;
+  }
+  </script>

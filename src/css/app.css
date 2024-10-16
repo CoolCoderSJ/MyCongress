@@ -35,3 +35,12 @@
 .welcomescreen-closebtn {
   display: none;
 }
+
+.badge {
+  border-radius: 3px;
+}
+
+.flex {
+  display: flex;
+  width: 100%;
+}

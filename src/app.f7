@@ -3,7 +3,17 @@
 
     <div class="views safe-areas">
       <div id="view-home" class="view view-main view-init tab tab-active" data-url="/"></div>
+    
+      <div class="toolbar toolbar-bottom tabbar">
+        <div class="toolbar-inner">
+          <a href="/" class="tab-link" id="link_tab1" data-route-tab-id="tab1">Home</a>
+          <a href="/search/" class="tab-link" id="link_tab2" data-route-tab-id="tab2">Search</a>
+        </div>
+      </div>
+      <div class="tabs tabs-routable">
+        <div class="page-content tab" id="tab1"></div>
+        <div class="page-content tab" id="tab2"></div>
+      </div>
     </div>
-
   </div>
 </template>

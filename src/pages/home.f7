@@ -2,7 +2,7 @@
   <div class="page" data-name="home">
     <!-- Top Navbar -->
     <div class="navbar navbar-large">
-      <div class="navbar-bg"></div>
+      <div class="navbar-bg" style="background-color: #1a1c19;"></div>
       <div class="navbar-inner">
         <div class="title sliding"><b>billable</b></div>
         <div class="title-large">
@@ -13,61 +13,94 @@
 
     <!-- Scrollable page content-->
     <div class="page-content">
-      <div class="block">
-        <p>This is an example of tabs-layout application. The main point of such tabbed layout is that each tab contains independent view with its own routing and navigation.</p>
-
-        <p>Each tab/view may have different layout, different navbar type (dynamic, fixed or static) or without navbar like this tab.</p>
-      </div>
-      <div class="block-title">Navigation</div>
-      <div class="list list-strong inset list-dividers-ios">
-        <ul>
-          <li>
-            <a href="/about/" class="item-content item-link">
-              <div class="item-inner">
-                <div class="item-title">About</div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="/form/" class="item-content item-link">
-              <div class="item-inner">
-                <div class="item-title">Form</div>
-              </div>
-            </a>
-          </li>
-        </ul>
+      
+      <div class="flex" style="margin-left: 20px; margin-right: 10px; gap: 6px">
+        <div class="grid-cols-2 grid" style="gap: 6px">
+            <a class="button button-tonal" style="width: fit-content;" id="updateGPSBtn"><i class="f7-icons">map_pin_ellipse</i></a>
+            <a class="button button-tonal" style="width: fit-content;"><i class="material-icons">receipt_long</i></a>
+        </div>
+        <a href="/search/" class="button button-tonal" style="width: 60%;">Search</a>
       </div>
 
-      <div class="block-title">Modals</div>
-      <div class="block grid grid-cols-2 grid-gap">
-        <a href="#" class="button button-fill popup-open" data-popup="#my-popup">Popup</a>
-        <a href="#" class="button button-fill login-screen-open" data-login-screen="#my-login-screen">Login Screen</a>
+      <div class="block" id="notFound" style="display: none;">
+        <h2>Location not found!</h2>
+        <p>Try updating your location via the button above, or search for a congressperson manually.</p>
       </div>
 
-      <div class="block-title">Panels</div>
-      <div class="block grid grid-cols-2 grid-gap">
-        <a href="#" class="button button-fill panel-open" data-panel="left">Left Panel</a>
-        <a href="#" class="button button-fill panel-open" data-panel="right">Right Panel</a>
+      <div class="list" id="homeList">
+        
       </div>
-
-      <div class="list list-strong inset list-dividers-ios links-list">
-        <ul>
-          <li>
-            <a href="/dynamic-route/blog/45/post/125/?foo=bar#about">Dynamic (Component) Route</a>
-          </li>
-          <li>
-            <a href="/load-something-that-doesnt-exist/">Default Route (404)</a>
-          </li>
-          <li>
-            <a href="/request-and-load/user/123456/">Request Data & Load</a>
-          </li>
-        </ul>
-      </div>
+    
     </div>
   </div>
 </template>
 <script>
-export default () => {
+export default (props, { $update, $, $f7, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted }) => {
+  $on('pageInit', () => {
+    document.getElementsByClassName("tab-link-highlight")[0].setAttribute('style', 'left: 0; width: 50%');
+
+    document.getElementById("updateGPSBtn").addEventListener('click', () => {
+      updateGPS();
+    })
+
+    if (localStorage.getItem('pos')) {
+      let pos = JSON.parse(localStorage.getItem('pos'));
+      let lat = pos.lat;
+      let lon = pos.lon;
+      let URL = `https://geocoding.geo.census.gov/geocoder/geographies/coordinates?x=${lon}&y=${lat}&benchmark=Public_AR_Current&vintage=Current_Current&format=json`;
+      URL = `https://corsproxy.io/?${encodeURIComponent(URL)}`;
+      fetch(URL)
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+          let state = data.result.geographies['States'][0].STUSAB;
+          let district = data.result.geographies['119th Congressional Districts'][0].BASENAME;
+
+          let URL = `https://api.congress.gov/v3/member/${state}?api_key=Us5xtdcaVcWvau0ZUfp8z0qaYbnStBQSr3XD4uh9&format=json&currentMember=true`;
+          fetch(URL)
+            .then(response => response.json())
+            .then(data => {
+              let results = data.members;
+              for (let i = 0; i < results.length; i++) {
+                  if (results[i].district && results[i].district != district) continue;
+                  let name = results[i].name.split(", ").reverse().join(" ");
+                  document.getElementById("homeList").innerHTML += `<a href="/person/${results[i].bioguideId}">
+                  <div class="block">
+                      <div class="card" style="margin-left: 0; margin-right: 0;">
+                        <div class="card-content card-content-padding" style="padding-left: 20px; padding-bottom: 10px; padding-right: 0px;">
+                          <div class="grid grid-cols-2" style="gap: 12px">
+                            <div style="display: flex; flex-direction: column; justify-content: center;">
+                              <h1 style="margin-bottom: 6px; color: ${results[i].partyName == "Democratic" ? 'rgb(133, 185, 253)' : '#ff3b30'}">${name}</h1>
+                              <h1 style="margin-top: 0px; margin-bottom: 12px; display: flex; gap: 8px;"><span class="badge color-black">${results[i].terms.item[0].chamber == "House of Representatives" ? "House" : "Senate"}</span><span class="badge color-black">${state}</span>${results[i].district ? `<span class="badge color-black">District ${results[i].district}</span>` : ''}</h1>
+                              <button class="button button-tonal">More</button>
+                            </div>
+                            <div>
+                              <img src="${results[i].depiction.imageUrl}" style="border-radius: 12px; margin-bottom: 0; width: 175px; height: 219px;" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                  </a>`;
+              }              
+            })
+        })
+    }
+
+    else document.getElementById("notFound").style.display = 'block';
+  })
+
+  function updateGPS() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(position => {
+      localStorage.setItem('pos', JSON.stringify({ lat: position.coords.latitude, lon: position.coords.longitude }));
+      window.location.reload();
+  });
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+}
+
   return $render;
 }
 </script>
