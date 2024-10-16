@@ -1,0 +1,40 @@
+<template>
+    <div class="page" data-name="home">
+      <!-- Top Navbar -->
+      <div class="navbar">
+        <div class="navbar-bg" style="background-color: #1a1c19;"></div>
+        <div class="navbar-inner sliding">
+            <div class="left">
+              <a href="#" class="link back">
+                <i class="icon icon-back"></i>
+                <span class="if-not-md">Back</span>
+              </a>
+            </div>
+            <div class="title">Congressperson</div>
+          </div>
+      </div>
+  
+      <!-- Scrollable page content-->
+      <div class="page-content">
+        
+        <div class="card demo-card-header-pic">
+            <div style="background-image:url(https://www.congress.gov/img/member/d000530_200.jpg); background-repeat: no-repeat; font-weight: 600; background-size: cover; height: 325px;"
+              class="card-header"></div>
+            <div class="card-content card-content-padding">
+                <h1>Christopher R. Deluzio</h1>
+              <div style="gap: 4px; display: flex;"><span class="badge color-black">House</span><span class="badge color-black">PA</span><span class="badge color-black">District 17</span></div>
+            </div>
+        </div>
+      
+      </div>
+    </div>
+  </template>
+  <script>
+  export default (props, { $update, $, $f7, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted }) => {
+    $on('pageInit', () => {
+      document.getElementsByClassName("tab-link-highlight")[0].setAttribute('style', 'left: 0; width: 50%');
+    })
+
+    return $render;
+  }
+  </script>

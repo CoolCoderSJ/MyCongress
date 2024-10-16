@@ -25,6 +25,8 @@
         document.getElementsByClassName("tab-link-highlight")[0].setAttribute('style', 'left: 50%; width: 50%;');
         let results = app.store.state.personSearchResults;
 
+        document.getElementById("resultsList").innerHTML = `<div class="block"><h2>Results for ${app.store.state.state}${app.store.state.district ? ` District ${app.store.state.district}` : ''}</h2></div>`;
+
         for (let i = 0; i < results.length; i++) {
             let name = results[i].name.split(", ").reverse().join(" ");
             document.getElementById("resultsList").innerHTML += `<a href="/person/${results[i].bioguideId}">

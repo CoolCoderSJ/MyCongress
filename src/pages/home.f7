@@ -28,7 +28,7 @@
       </div>
 
       <div class="list" id="homeList">
-        
+    
       </div>
     
     </div>
@@ -56,7 +56,9 @@ export default (props, { $update, $, $f7, $on, $onBeforeMount, $onMounted, $onBe
           let state = data.result.geographies['States'][0].STUSAB;
           let district = data.result.geographies['119th Congressional Districts'][0].BASENAME;
 
-          let URL = `https://api.congress.gov/v3/member/${state}?api_key=Us5xtdcaVcWvau0ZUfp8z0qaYbnStBQSr3XD4uh9&format=json&currentMember=true`;
+          document.getElementById("homeList").innerHTML = `<div class="block"><h2>${state} District ${district}</h2></div>`;
+
+          let URL = `https://api.congress.gov/v3/member/${state}?api_key=Us5xtdcaVcWvau0ZUfp8z0qaYbnStBQSr3XD4uh9&format=json&currentMember=true&limit=100`;
           fetch(URL)
             .then(response => response.json())
             .then(data => {

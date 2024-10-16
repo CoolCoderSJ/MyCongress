@@ -132,7 +132,7 @@
 
         console.log(state, district, current);
 
-        let URL = `https://api.congress.gov/v3/member/${state}/${district}?api_key=Us5xtdcaVcWvau0ZUfp8z0qaYbnStBQSr3XD4uh9&format=json&currentMember=${current}`
+        let URL = `https://api.congress.gov/v3/member/${state}/${district}?api_key=Us5xtdcaVcWvau0ZUfp8z0qaYbnStBQSr3XD4uh9&format=json&currentMember=${current}&limit=100`
         fetch(URL)
         .then(response => response.json())
         .then(data => {
