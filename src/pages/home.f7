@@ -27,7 +27,9 @@
         <p>Try updating your location via the button above, or search for a congressperson manually.</p>
       </div>
 
-      <div class="list" id="homeList">
+      <div id="block"></div>
+
+      <div class="list" id="homeList" style="display: flex; flex-wrap: wrap;">
     
       </div>
     
@@ -56,7 +58,7 @@ export default (props, { $update, $, $f7, $on, $onBeforeMount, $onMounted, $onBe
           let state = data.result.geographies['States'][0].STUSAB;
           let district = data.result.geographies['119th Congressional Districts'][0].BASENAME;
 
-          document.getElementById("homeList").innerHTML = `<div class="block"><h2>${state} District ${district}</h2></div>`;
+          document.getElementById("block").innerHTML = `<div class="block"><h2>${state} District ${district}</h2></div>`;
 
           let URL = `https://api.congress.gov/v3/member/${state}?api_key=Us5xtdcaVcWvau0ZUfp8z0qaYbnStBQSr3XD4uh9&format=json&currentMember=true&limit=100`;
           fetch(URL)
@@ -67,8 +69,8 @@ export default (props, { $update, $, $f7, $on, $onBeforeMount, $onMounted, $onBe
                   if (results[i].district && results[i].district != district) continue;
                   let name = results[i].name.split(", ").reverse().join(" ");
                   document.getElementById("homeList").innerHTML += `<a href="/person/${results[i].bioguideId}">
-                  <div class="block">
-                      <div class="card" style="margin-left: 0; margin-right: 0;">
+                  <div class="block" style="margin: 0">
+                      <div class="card" style="margin-left: 0; margin-right: 0; width: 420px;">
                         <div class="card-content card-content-padding" style="padding-left: 20px; padding-bottom: 10px; padding-right: 0px;">
                           <div class="grid grid-cols-2" style="gap: 12px">
                             <div style="display: flex; flex-direction: column; justify-content: center;">

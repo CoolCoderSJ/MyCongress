@@ -3,6 +3,7 @@ import HomePage from '../pages/home.f7';
 import SearchPage from '../pages/search.f7';
 import ResultsPage from '../pages/results.f7';
 import PersonPage from '../pages/biopage.f7';
+import BillPage from '../pages/bill.f7';
 import NotFoundPage from '../pages/404.f7';
 
 var routes = [
@@ -25,6 +26,10 @@ var routes = [
   {
     path: '/person/:id',
     component: PersonPage,
+  },
+  {
+    path: '/bill/:billType/:billNumber',
+    component: BillPage,
   },
   {
     path: '(.*)',

@@ -18,22 +18,156 @@
       <div class="page-content">
         
         <div class="card demo-card-header-pic">
-            <div style="background-image:url(https://www.congress.gov/img/member/d000530_200.jpg); background-repeat: no-repeat; font-weight: 600; background-size: cover; height: 325px;"
+            <div id="headshot" style="background-image:url(); background-repeat: no-repeat; font-weight: 600; background-size: cover; height: 325px;"
               class="card-header"></div>
             <div class="card-content card-content-padding">
-                <h1>Christopher R. Deluzio</h1>
-              <div style="gap: 4px; display: flex;"><span class="badge color-black">House</span><span class="badge color-black">PA</span><span class="badge color-black">District 17</span></div>
+                <h1 id="bioName"></h1>
+              <div style="gap: 4px; display: flex;" id="badges"></div>
             </div>
         </div>
+
+        <div class="flex" style="gap: 6px; padding-left: 15px; padding-right: 15px; width: 93%">
+          <a class="button button-tonal popup-open" id="billsButton" style="width: 100%;" data-popup=".sp-bill-popup">View Bills</a>
+          <a class="button button-tonal mb-0 external" style="width: 100%" target="_blank" id="personWebsite">Visit Website</a>
+        </div>
+
+        <div class="block block-strong" style="margin-top: 14px;">
+            <div class="row"><p class="block-title">Party</p> <p id="party"></p></div>
+            <div class="row"><p class="block-title">Democrat since...</p> <p id="partySince"></p></div>
+
+            <div class="row"><p class="block-title">Cosponsored Legislation</p> <p id="cosponsored"></p></div>
+            <div class="row"><p class="block-title">Sponsored Legislation</p> <p id="sponsored"></p></div>
+        </div>
+        
+            
+        <div class="popup sp-bill-popup">
+            <div class="view view-init">
+              <div class="page page-with-navbar-large">
+                <div class="navbar navbar-large navbar-transparent">
+                  <div class="navbar-bg"></div>
+                  <div class="navbar-inner">
+                    <div class="title">Sponsored Legislation</div>
+                    <div class="right"><a class="link popup-close">Close</a></div>
+                    <div class="title-large">
+                      <div class="title-large-text">Sponsored Legislation</div>
+                    </div>
+                    <div class="subnavbar" style="background-color: transparent;">
+                      <form data-search-container=".virtual-list" data-search-item="li" data-search-in=".item-title"
+                        class="searchbar searchbar-init">
+                        <div class="searchbar-inner">
+                          <div class="searchbar-input-wrap">
+                            <input type="search" placeholder="Search" />
+                            <i class="searchbar-icon"></i>
+                            <span class="input-clear-button"></span>
+                          </div>
+                          <span class="searchbar-disable-button">Cancel</span>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div class="page-content">
+                  <div class="list list-strong list-outline-ios inset-md list-dividers-ios virtual-list media-list searchbar-found">
+                  </div>
+                  <div class="block" id="cardContainer"></div>
+                  <div class="block" style="display: none;" id="reserve"></div>
+                </div>
+              </div>
+            </div>
+          </div>
       
       </div>
     </div>
   </template>
   <script>
-  export default (props, { $update, $, $f7, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted }) => {
+  export default (props, { $update, $, $f7, $el, $theme, $f7route, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted }) => {
+    $onMounted(() => {
+      let items = [];
+      let personId = $f7route.path.split("/")[2];
+
+      let URL  = `https://api.congress.gov/v3/member/${personId}/sponsored-legislation?api_key=Us5xtdcaVcWvau0ZUfp8z0qaYbnStBQSr3XD4uh9&format=json`;
+      let virtualList;
+      const fetchLegislation = (URL) => {
+      fetch(URL)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.pagination)
+        let legislation = data.sponsoredLegislation;
+        for (let i=0; i<legislation.length; i++) {
+          if (legislation[i].amendmentNumber)
+            continue;
+          items.push({
+            title: legislation[i].title,
+            subtitle: String(legislation[i].policyArea.name).replace(null, "") + " - " + legislation[i].introducedDate,
+            key: legislation[i].type.toLowerCase() + "/" + legislation[i].number
+          });
+        }
+        
+        if (data.pagination.next)
+          fetchLegislation(data.pagination.next + "&api_key=Us5xtdcaVcWvau0ZUfp8z0qaYbnStBQSr3XD4uh9");
+      })
+      }
+
+      fetchLegislation(URL);
+
+      virtualList = $f7.virtualList.create({
+        el: $el.value.find('.virtual-list'),
+        items,
+        searchAll: function (query, items) {
+          var found = [];
+          for (var i = 0; i < items.length; i++) {
+            if (items[i].title.toLowerCase().indexOf(query.toLowerCase()) >= 0 || query.trim() === '') found.push(i);
+          }
+          return found;
+        },
+
+        renderItem(item) {
+          return `
+          <li>
+            <a href="/bill/${item.key}" class="item-link item-content">
+              <div class="item-inner">
+                <div class="item-title-row">
+                  <div class="item-title">${item.title}</div>
+                </div>
+                <div class="item-subtitle">${item.subtitle}</div>
+              </div>
+            </a>
+          </li>`;
+        },
+        // Item height
+        height: $theme.ios ? 65 : 69,
+      });
+    })
+
     $on('pageInit', () => {
       document.getElementsByClassName("tab-link-highlight")[0].setAttribute('style', 'left: 0; width: 50%');
-    })
+
+      let items = [];
+      let completed = false;
+      let personId = $f7route.path.split("/")[2];
+
+      let URL = `https://api.congress.gov/v3/member/${personId}?api_key=Us5xtdcaVcWvau0ZUfp8z0qaYbnStBQSr3XD4uh9&format=json`;
+      fetch(URL)
+      .then(response => response.json())
+      .then(data => {
+        data = data.member;
+        document.getElementById("headshot").style.backgroundImage = `url(${data.depiction.imageUrl})`;
+        document.getElementById("bioName").innerText = `${data.firstName} ${data.lastName}`;
+        document.getElementById("personWebsite").href = data.officialWebsiteUrl;
+        if (data.terms[0].chamber == "House of Representatives")
+          document.getElementById("badges").innerHTML += `<span class="badge color-black">House</span>`;
+        else
+          document.getElementById("badges").innerHTML += `<span class="badge color-black">Senate</span>`;
+        
+        document.getElementById("badges").innerHTML += `<span class="badge color-black">${data.terms[0].stateCode}</span>`;
+        if (data.terms[0].chamber == "House of Representatives" && data.terms[0].district)
+          document.getElementById("badges").innerHTML += `<span class="badge color-black">District ${data.terms[0].district}</span>`;
+        document.getElementById("party").innerText = data.partyHistory[0].partyName;
+        document.getElementById("partySince").innerText = data.partyHistory[0].startYear;
+        document.getElementById("cosponsored").innerText = data.cosponsoredLegislation.count;
+        document.getElementById("sponsored").innerText = data.sponsoredLegislation.count;
+      })
+      })
 
     return $render;
   }

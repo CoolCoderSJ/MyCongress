@@ -1,0 +1,151 @@
+<template>
+    <div class="page" data-name="home">
+      <!-- Top Navbar -->
+      <div class="navbar">
+        <div class="navbar-bg" style="background-color: #1a1c19;"></div>
+        <div class="navbar-inner sliding">
+            <div class="left">
+              <a href="#" class="link back">
+                <i class="icon icon-back"></i>
+                <span class="if-not-md">Back</span>
+              </a>
+            </div>
+            <div class="title">View Bill</div>
+          </div>
+      </div>
+  
+      <div class="page-content">
+        
+        <div class="block">
+            <h1 id="title"></h1>
+            <h3 id="billNumber" style="color: #ccc; font-weight: 600;"></h3>
+            <div class="group">
+                <span class="badge color-primary dark" id="introduced"></span>
+            </div>
+            <h2 class="text-color-primary mb-0">Sponsors:</h2>
+            <div class="list list-outline-ios list-strong-ios list-dividers-ios billList">
+                <ul id="sponsorsList">
+                  
+                </ul>
+              </div>
+
+              <h2 class="text-color-primary mb-0" style="margin-top: 10px;">Co-Sponsors:</h2>
+                <div class="list list-outline-ios list-strong-ios list-dividers-ios billList">
+                <ul id="cosponsorsList">
+
+                </ul>
+              </div>
+
+              <p id="summary" style="margin-top: 10px"></p>
+
+              <h2 class="text-color-primary mb-0" style="margin-top: 10px;">Track this bill:</h2>
+              <div class="timeline" id="timeline" style="padding-left: 0;">
+                
+              </div>
+        </div>
+
+      </div>
+    </div>
+  </template>
+  <script>
+  export default (props, { $update, $, $f7, $el, $theme, $f7route, $on, $onBeforeMount, $onMounted, $onBeforeUnmount, $onUnmounted }) => {
+    $on('pageInit', () => {
+      document.getElementsByClassName("tab-link-highlight")[0].setAttribute('style', 'left: 0; width: 50%');
+
+        $f7.dialog.preloader("Loading bill information...");
+
+        let billType = $f7route.params.billType;
+        let billNumber = $f7route.params.billNumber;
+
+        fetch(`https://api.congress.gov/v3/bill/118/${billType}/${billNumber}?api_key=Us5xtdcaVcWvau0ZUfp8z0qaYbnStBQSr3XD4uh9&format=json`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            document.getElementById("title").innerText = data.bill.title;
+            document.getElementById("billNumber").innerText = `${data.bill.type.toUpperCase()} ${data.bill.number}`;
+            document.getElementById("introduced").innerText = data.bill.introducedDate;
+
+            let sponsorsList = document.getElementById("sponsorsList");
+            for (let i=0; i<data.bill.sponsors.length; i++) {
+                sponsorsList.innerHTML += `<li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">${data.bill.sponsors[i].fullName}</div>
+                      </div>
+                    </div>
+                  </li>`;
+            }
+
+            let cosponsorsList = document.getElementById("cosponsorsList");
+            fetch(`https://api.congress.gov/v3/bill/118/${billType}/${billNumber}/cosponsors?api_key=Us5xtdcaVcWvau0ZUfp8z0qaYbnStBQSr3XD4uh9&format=json`)
+            .then(response => response.json())
+            .then(cs => {
+                console.log(cs)
+                for (let i=0; i<cs.cosponsors.length; i++) {
+                    cosponsorsList.innerHTML += `<li>
+                        <div class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title">${cs.cosponsors[i].fullName}</div>
+                            </div>
+                        </div>
+                        </li>`;
+                }
+            });
+
+            fetch(`https://api.congress.gov/v3/bill/118/${billType}/${billNumber}/actions?api_key=Us5xtdcaVcWvau0ZUfp8z0qaYbnStBQSr3XD4uh9&format=json`)
+            .then(response => response.json())
+            .then(actions => {
+                console.log(actions)
+                let completedActions = []
+                let timeline = document.getElementById("timeline");
+                for (let i=actions.actions.length - 1; i>=0; i--) {
+                    if (completedActions.includes(actions.actions[i].text))
+                        continue;
+                    timeline.innerHTML += `<div class="timeline-item">
+                  <div class="timeline-item-date" style="width: fit-content;">${actions.actions[i].actionDate.split("-")[1]}/${actions.actions[i].actionDate.split("-")[2]}/${actions.actions[i].actionDate.split("-")[0]}</div>
+                  <div class="timeline-item-divider"></div>
+                  <div class="timeline-item-content">
+                    <div class="timeline-item-inner">${actions.actions[i].text}</div>
+                  </div>
+                </div>`;
+                    completedActions.push(actions.actions[i].text);
+                }
+            })
+
+            fetch(`https://api.congress.gov/v3/bill/118/${billType}/${billNumber}/text?api_key=Us5xtdcaVcWvau0ZUfp8z0qaYbnStBQSr3XD4uh9&format=json`)
+            .then(response => response.json())
+            .then(text => {
+                if (text.textVersions.length == 0) {
+                    document.getElementById("summary").innerText = "Text for this bill has not yet been published.";
+                    $f7.dialog.close();
+                }
+
+                else {
+                    let textUrl = text.textVersions[0].formats[0].url;
+                    console.log(textUrl)
+                    fetch("https://nest.hyena-char.ts.net/api/summarize", {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                    bills: [{
+                        url: textUrl
+                    }]
+                    })
+                    })
+                    .then(response => response.json())
+                    .then(summaries => {
+                        console.log(summaries)
+                        document.getElementById("summary").innerText = summaries[0].summary;
+                        $f7.dialog.close();
+                    })
+                }
+            })
+
+        })
+    })
+
+    return $render;
+  }
+  </script>
