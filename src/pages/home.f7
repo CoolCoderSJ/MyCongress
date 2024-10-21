@@ -15,11 +15,8 @@
     <div class="page-content">
       
       <div class="flex" style="margin-left: 20px; margin-right: 10px; gap: 6px">
-        <div class="grid-cols-2 grid" style="gap: 6px">
-            <a class="button button-tonal" style="width: fit-content;" id="updateGPSBtn"><i class="f7-icons">map_pin_ellipse</i></a>
-            <a class="button button-tonal" style="width: fit-content;"><i class="material-icons">receipt_long</i></a>
-        </div>
-        <a href="/search/" class="button button-tonal" style="width: 60%;">Search</a>
+        <a class="button button-tonal" style="width: fit-content;" id="updateGPSBtn"><i class="f7-icons">map_pin_ellipse</i></a>
+        <a href="/search/" class="button button-tonal" style="width: 77%;">Search</a>
       </div>
 
       <div class="block" id="notFound" style="display: none;">
