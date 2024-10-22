@@ -4,7 +4,7 @@
     "web",
     "cordova"
   ],
-  "name": "billable",
+  "name": "MyCongress",
   "framework": "core",
   "template": "tabs",
   "bundler": "vite",
@@ -16,7 +16,7 @@
     "iconFonts": true
   },
   "customBuild": false,
-  "pkg": "dev.shuchir.billable",
+  "pkg": "dev.shuchir.MyCongress",
   "cordova": {
     "folder": "cordova",
     "platforms": [

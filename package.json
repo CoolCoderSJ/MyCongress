@@ -1,8 +1,8 @@
 {
-  "name": "billable",
+  "name": "MyCongress",
   "private": true,
   "version": "1.0.0",
-  "description": "billable",
+  "description": "MyCongress",
   "repository": "",
   "license": "UNLICENSED",
   "scripts": {

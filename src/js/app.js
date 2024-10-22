@@ -22,15 +22,15 @@ import App from '../app.f7';
 let welcomescreen_slides = [
   {
     id: 'slide0',
-    title: 'Welcome to billable!',
+    title: 'Welcome to MyCongress!',
     picture: '<i class="f7-icons">building_columns_fill</i>',
-    text: 'Welcome to billable! Quickly find out more about who represents you. <br><br><a class="button button-tonal" onclick="app.welcomescreen.next();">Next</a>',
+    text: 'Welcome to MyCongress! Quickly find out more about who represents you. <br><br><a class="button button-tonal" onclick="app.welcomescreen.next();">Next</a>',
   },
   {
     id: 'slide1',
     title: 'Allow access to your location?',
     picture: '<i class="f7-icons">map_pin_ellipse</i>',
-    text: `By allowing access to your location, billable will be able to find your congresspeople automatically based on your location. <br><br><a class="button button-fill" style="margin-bottom: 10px" onclick="getLocation();">Allow Location</a> <a class="button button-tonal" onclick="app.welcomescreen.close(); localStorage.setItem('intro', true);;">Skip</a>`,
+    text: `By allowing access to your location, MyCongress will be able to find your congresspeople automatically based on your location. <br><br><a class="button button-fill" style="margin-bottom: 10px" onclick="getLocation();">Allow Location</a> <a class="button button-tonal" onclick="app.welcomescreen.close(); localStorage.setItem('intro', true);;">Skip</a>`,
   },
 ];
 
@@ -43,7 +43,7 @@ var options = {
 
 var device = getDevice();
 var app = new Framework7({
-  name: 'billable', // App name
+  name: 'MyCongress', // App name
   theme: 'auto', // Automatic theme detection
   colors: {
     primary: '#0c2b0e',

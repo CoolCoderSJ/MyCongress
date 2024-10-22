@@ -1,4 +1,4 @@
-# billable
+# MyCongress
 
 ## Framework7 CLI Options
 
@@ -6,12 +6,12 @@ Framework7 app created with following options:
 
 ```
 {
-  "cwd": "C:\\Users\\shuch\\billable",
+  "cwd": "C:\\Users\\shuch\\MyCongress",
   "type": [
     "web",
     "cordova"
   ],
-  "name": "billable",
+  "name": "MyCongress",
   "framework": "core",
   "template": "tabs",
   "bundler": "vite",
@@ -23,7 +23,7 @@ Framework7 app created with following options:
     "iconFonts": true
   },
   "customBuild": false,
-  "pkg": "dev.shuchir.billable",
+  "pkg": "dev.shuchir.MyCongress",
   "cordova": {
     "folder": "cordova",
     "platforms": [

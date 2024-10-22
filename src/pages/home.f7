@@ -4,9 +4,9 @@
     <div class="navbar navbar-large">
       <div class="navbar-bg" style="background-color: #1a1c19;"></div>
       <div class="navbar-inner">
-        <div class="title sliding"><b>billable</b></div>
+        <div class="title sliding"><b>MyCongress</b></div>
         <div class="title-large">
-          <div class="title-large-text"><b>billable</b></div>
+          <div class="title-large-text"><b>MyCongress</b></div>
         </div>
       </div>
     </div>
