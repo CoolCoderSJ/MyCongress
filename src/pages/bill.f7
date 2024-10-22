@@ -123,7 +123,7 @@
                 else {
                     let textUrl = text.textVersions[0].formats[0].url;
                     console.log(textUrl)
-                    fetch("https://nest.hyena-char.ts.net/api/summarize", {
+                    fetch("https://congressional24.shuchir.dev/api/summarize", {
                     method: 'POST',
                     headers: {
                     'Content-Type': 'application/json'
