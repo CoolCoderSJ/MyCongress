@@ -98,8 +98,8 @@ function getLocation() {
 
 function showPosition(position) {
   localStorage.setItem('pos', JSON.stringify({ lat: position.coords.latitude, lon: position.coords.longitude }));
-  app.welcomescreen.close();
   localStorage.setItem('intro', true);
+  app.welcomescreen.close();
 }
 
 window.getLocation = getLocation;
