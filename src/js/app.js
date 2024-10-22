@@ -99,6 +99,7 @@ function getLocation() {
 function showPosition(position) {
   localStorage.setItem('pos', JSON.stringify({ lat: position.coords.latitude, lon: position.coords.longitude }));
   localStorage.setItem('intro', true);
+  window.location.reload();
   app.welcomescreen.close();
 }
 
